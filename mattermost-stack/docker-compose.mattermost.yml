@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+      POSTGRES_DB: ${PG_DB}
+    volumes:
+      - mattermost-db:/var/lib/postgresql/data
+    networks:
+      - default
+      - monitoring_net
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - default
+      - monitoring_net
+
+  mattermost:
+    image: mattermost/mattermost-team-edition:latest
+    container_name: mattermost
+    restart: unless-stopped
+    environment:
+      MM_SQLSETTINGS_DRIVERNAME: postgres
+      MM_SQLSETTINGS_DATASOURCE: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
+      MM_BLEVESETTINGS_INDEXDIR: /mattermost/data/bleve-indexes
+      MM_FILESETTINGS_DIRECTORY: /mattermost/data
+      MM_LOGSETTINGS_ENABLEPROMETHEUS: true
+    ports:
+      - "8065:8065"
+      - "8067:8067" # Prometheus metrics
+    volumes:
+      - mattermost-data:/mattermost/data
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - default
+      - monitoring_net
+
+volumes:
+  mattermost-db:
+  mattermost-data:
+
+networks:
+  monitoring_net:
+    external: true

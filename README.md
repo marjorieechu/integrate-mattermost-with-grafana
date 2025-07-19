@@ -56,3 +56,349 @@ Access the services:
 
 Happy Monitoring.......
 ```
+
+# services:
+
+# # Mattermost dependencies
+
+# postgres:
+
+# image: postgres:16-alpine
+
+# restart: unless-stopped
+
+# environment:
+
+# POSTGRES_USER: ${PG_USER}
+
+# POSTGRES_PASSWORD: ${PG_PASS}
+
+# POSTGRES_DB: ${PG_DB}
+
+# volumes:
+
+# - mattermost-db:/var/lib/postgresql/data
+
+# networks:
+
+# - monitoring_net
+
+# redis:
+
+# image: redis:alpine
+
+# restart: unless-stopped
+
+# networks:
+
+# - monitoring_net
+
+# mattermost:
+
+# image: mattermost/mattermost-team-edition:latest
+
+# container_name: mattermost
+
+# restart: unless-stopped
+
+# environment:
+
+# MM_SQLSETTINGS_DRIVERNAME: postgres
+
+# MM_SQLSETTINGS_DATASOURCE: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
+
+# MM_BLEVESETTINGS_INDEXDIR: /mattermost/data/bleve-indexes
+
+# MM_FILESETTINGS_DIRECTORY: /mattermost/data
+
+# MM_LOGSETTINGS_ENABLEPROMETHEUS: true
+
+# ports:
+
+# - "8065:8065"
+
+# - "8067:8067" # Prometheus metrics
+
+# volumes:
+
+# - mattermost-data:/mattermost/data
+
+# depends_on:
+
+# - postgres
+
+# - redis
+
+# networks:
+
+# - monitoring_net
+
+# # Monitoring
+
+# prometheus:
+
+# image: prom/prometheus
+
+# container_name: prometheus
+
+# volumes:
+
+# - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+# ports:
+
+# - "9090:9090"
+
+# networks:
+
+# - monitoring_net
+
+# grafana:
+
+# image: grafana/grafana
+
+# container_name: grafana
+
+# ports:
+
+# - "3000:3000"
+
+# volumes:
+
+# - grafana-storage:/var/lib/grafana
+
+# - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+
+# - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+# - ./grafana/provisioning/mattermost.yaml:/etc/grafana/provisioning/dashboards/mattermost.yaml
+
+# environment:
+
+# GF_SECURITY_ADMIN_USER: ${GF_USER}
+
+# GF_SECURITY_ADMIN_PASSWORD: ${GF_PASS}
+
+# networks:
+
+# - monitoring_net
+
+# redis-exporter:
+
+# image: oliver006/redis_exporter
+
+# ports:
+
+# - "9121:9121"
+
+# networks:
+
+# - monitoring_net
+
+# postgres-exporter:
+
+# image: quay.io/prometheuscommunity/postgres-exporter
+
+# environment:
+
+# DATA_SOURCE_NAME: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
+
+# ports:
+
+# - "9187:9187"
+
+# networks:
+
+# - monitoring_net
+
+# volumes:
+
+# mattermost-db:
+
+# mattermost-data:
+
+# grafana-storage:
+
+# networks:
+
+# monitoring_net:
+
+# driver: bridge
+
+# version: "3.9"
+
+# services:
+
+# # === Database Services ===
+
+# postgres:
+
+# image: postgres:16-alpine
+
+# restart: unless-stopped
+
+# environment:
+
+# POSTGRES_USER: ${PG_USER}
+
+# POSTGRES_PASSWORD: ${PG_PASS}
+
+# POSTGRES_DB: ${PG_DB}
+
+# volumes:
+
+# - mattermost-db:/var/lib/postgresql/data
+
+# networks:
+
+# - default
+
+# - monitoring_net
+
+# redis:
+
+# image: redis:alpine
+
+# restart: unless-stopped
+
+# networks:
+
+# - default
+
+# - monitoring_net
+
+# # === Mattermost App ===
+
+# mattermost:
+
+# image: mattermost/mattermost-team-edition:latest
+
+# container_name: mattermost
+
+# restart: unless-stopped
+
+# environment:
+
+# MM_SQLSETTINGS_DRIVERNAME: postgres
+
+# MM_SQLSETTINGS_DATASOURCE: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
+
+# MM_BLEVESETTINGS_INDEXDIR: /mattermost/data/bleve-indexes
+
+# MM_FILESETTINGS_DIRECTORY: /mattermost/data
+
+# MM_LOGSETTINGS_ENABLEPROMETHEUS: true
+
+# ports:
+
+# - "8065:8065"
+
+# - "8067:8067" # Prometheus metrics
+
+# volumes:
+
+# - mattermost-data:/mattermost/data
+
+# depends_on:
+
+# - postgres
+
+# - redis
+
+# networks:
+
+# - default
+
+# - monitoring_net
+
+# # === Monitoring Tools ===
+
+# prometheus:
+
+# image: prom/prometheus
+
+# container_name: prometheus
+
+# volumes:
+
+# - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+# ports:
+
+# - "9090:9090"
+
+# networks:
+
+# - monitoring_net
+
+# grafana:
+
+# image: grafana/grafana
+
+# container_name: grafana
+
+# ports:
+
+# - "3000:3000"
+
+# volumes:
+
+# - grafana-storage:/var/lib/grafana
+
+# - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+
+# - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+# - ./grafana/provisioning/mattermost.yaml:/etc/grafana/provisioning/dashboards/mattermost.yaml
+
+# environment:
+
+# GF_SECURITY_ADMIN_USER: ${GF_USER}
+
+# GF_SECURITY_ADMIN_PASSWORD: ${GF_PASS}
+
+# networks:
+
+# - monitoring_net
+
+# redis-exporter:
+
+# image: oliver006/redis_exporter
+
+# ports:
+
+# - "9121:9121"
+
+# networks:
+
+# - monitoring_net
+
+# postgres-exporter:
+
+# image: quay.io/prometheuscommunity/postgres-exporter
+
+# environment:
+
+# DATA_SOURCE_NAME: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
+
+# ports:
+
+# - "9187:9187"
+
+# networks:
+
+# - monitoring_net
+
+# volumes:
+
+# mattermost-db:
+
+# mattermost-data:
+
+# grafana-storage:
+
+# networks:
+
+# monitoring_net:
+
+# external: true

@@ -11,6 +11,7 @@ scrape_configs:
       - targets: ["grafana:3000"]
 
   - job_name: "mattermost"
+    metrics_path: "/debug/metrics"
     static_configs:
       - targets: ["mattermost:8067"]
 

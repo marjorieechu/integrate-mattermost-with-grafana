@@ -28,7 +28,6 @@ services:
       MM_SQLSETTINGS_DATASOURCE: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
       MM_BLEVESETTINGS_INDEXDIR: /mattermost/data/bleve-indexes
       MM_FILESETTINGS_DIRECTORY: /mattermost/data
-      MM_LOGSETTINGS_ENABLEPROMETHEUS: "true"
       MM_METRICSSETTINGS_ENABLE: "true"
       MM_METRICSSETTINGS_LISTENADDRESS: ":8067"
     ports:
@@ -80,6 +79,20 @@ services:
       DATA_SOURCE_NAME: postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_DB}?sslmode=disable
     ports:
       - "9187:9187"
+    networks:
+      - monitoring_net
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart: always
     networks:
       - monitoring_net
 

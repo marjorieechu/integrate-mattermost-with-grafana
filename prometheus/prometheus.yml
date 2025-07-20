@@ -10,11 +10,6 @@ scrape_configs:
     static_configs:
       - targets: ["grafana:3000"]
 
-  - job_name: "mattermost"
-    metrics_path: "/debug/metrics"
-    static_configs:
-      - targets: ["mattermost:8067"]
-
   - job_name: "redis"
     static_configs:
       - targets: ["redis-exporter:9121"]

@@ -1,4 +1,4 @@
-# integrate-mattermost-with-grafana
+# mattermost-grafana-connection
 
 To integrate Mattermost service with Grafana in order to visualize set panels based on Prometheus scraping.
 
